@@ -13,7 +13,6 @@ const ChatBot = () => {
   const [sessionId] = useState(uuid());
   const [isHumanAgent, setIsHumanAgent] = useState(false);
   const formRef = useRef({});
-
   let prevMsg = {};
 
   const { user } = useSelector((state) => state.auth);
@@ -121,7 +120,7 @@ const ChatBot = () => {
           setIsHumanAgent(true);
         }
       },
-      path: (params) => {
+      path: async (params) => {
         if (
           params.userInput.toLowerCase().match("annual leave") &&
           params.prevPath == "loop"
@@ -138,7 +137,10 @@ const ChatBot = () => {
         )
           return "leave_balance";
         if (params.userInput == "Submit Leave Request") return "book_leave";
-        if (params.userInput.match("Escalate")) return "human_handover";
+        if (params.userInput.match("Escalate")) {
+          await params.injectMessage("Connecting to an agent... ");
+          return "human_handover";
+        }
         return "loop";
       },
     },
@@ -248,18 +250,18 @@ const ChatBot = () => {
     },
     human_handover: {
       message: async (params) => {
-        // params.injectMessage("Connecting to an agent... ");
         socket.on("agent_joined", async () => {
           console.log("agent_joined");
           await params.injectMessage("Connected to an agent... ");
         });
 
         socket.on("new_message", async (data) => {
-          console.log("new_message");
-          if (prevMsg.id != data.message.id) {
+          if (parseInt(data.message.id) === parseInt(prevMsg.id)) {
+            prevMsg = data.message;
+          } else {
+            prevMsg = data.message;
             await params.injectMessage(data.message.text);
           }
-          prevMsg = data.message;
         });
       },
       function: (params) => {
@@ -276,8 +278,16 @@ const ChatBot = () => {
     unknown_input: {
       message: "I didn't get that. Can you say it again?",
       options: ["Escalate", "Return to Main Menu"],
-      path: (params) => {
-        if (params.userInput.match("Escalate")) return "human_handover";
+      function: (params) => {
+        if (params.userInput.match("Escalate")) {
+          setIsHumanAgent(true);
+        }
+      },
+      path: async (params) => {
+        if (params.userInput.match("Escalate")) {
+          await params.injectMessage("Connecting to an agent... ");
+          return "human_handover";
+        }
         return "loop";
       },
     },

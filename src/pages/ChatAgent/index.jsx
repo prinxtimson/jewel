@@ -189,10 +189,7 @@ const index = () => {
                           <div
                             className={`text-[10px] text-neutral-400 px-1 ${msg.sender === "user" ? "text-left" : "text-right"}`}
                           >
-                            {moment(msg.timestamp).toLocaleString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
+                            {moment(msg.timestamp).format("LT")}
                           </div>
                         </div>
                       </div>
