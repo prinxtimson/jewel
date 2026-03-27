@@ -2,11 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { RefreshCcw } from "lucide-react";
 import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
-import ChatBotify, {
-  Button as ChatBotton,
-  useFlow,
-  ChatBotProvider,
-} from "react-chatbotify";
+import ChatBotify, { useFlow, ChatBotProvider } from "react-chatbotify";
 import { socket } from "../lib/socket";
 
 import { searchLeaveBalance, submitLeaveApplication } from "../lib/appwrite";
@@ -252,9 +248,10 @@ const ChatBot = () => {
     },
     human_handover: {
       message: async (params) => {
+        params.injectMessage("Connecting to an agent... ");
         socket.on("agent_joined", async () => {
           console.log("agent_joined");
-          await params.injectMessage("Connected to an agent.. ");
+          await params.injectMessage("Connected to an agent... ");
         });
 
         socket.on("new_message", async (data) => {
@@ -315,6 +312,12 @@ const ChatBot = () => {
     theme: {
       primaryColor: "#6a008e",
       //secondaryColor: "#059669",
+    },
+    emoji: {
+      disabled: true,
+    },
+    fileAttachment: {
+      disabled: true,
     },
   };
 

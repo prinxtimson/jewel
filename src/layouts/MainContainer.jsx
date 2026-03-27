@@ -146,12 +146,12 @@ const MainContainer = ({ children, toast, handleOnTextChange = null }) => {
                 />
               </div>
               <div className="h-8 w-[1px] bg-slate-200"></div>
-              <Link
+              {/* <Link
                 to="/dashboard/profile"
                 className="text-sm font-bold text-slate-900"
               >
                 Profile
-              </Link>
+              </Link> */}
               <span
                 className="text-sm font-bold text-red-600 cursor-pointer"
                 onClick={onLogout}

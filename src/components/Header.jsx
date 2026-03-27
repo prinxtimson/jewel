@@ -24,10 +24,10 @@ const Header = () => {
   };
 
   const menuItems = [
-    {
-      label: "Profile Settings",
-      command: () => navigate("/profile"),
-    },
+    // {
+    //   label: "Profile Settings",
+    //   command: () => navigate("/profile"),
+    // },
     {
       label: "Logout",
       className: "text-red-500 font-semibold",
