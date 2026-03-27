@@ -248,7 +248,7 @@ const ChatBot = () => {
     },
     human_handover: {
       message: async (params) => {
-        params.injectMessage("Connecting to an agent... ");
+        // params.injectMessage("Connecting to an agent... ");
         socket.on("agent_joined", async () => {
           console.log("agent_joined");
           await params.injectMessage("Connected to an agent... ");
