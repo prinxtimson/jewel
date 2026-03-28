@@ -72,7 +72,7 @@ const MainContainer = ({ children, toast, handleOnTextChange = null }) => {
           user={user}
           customClass="w-80 bg-slate-900 h-screen flex-col text-slate-300 hidden lg:flex"
         />
-        <main className="grow overflow-y-auto bg-slate-50 relative flex flex-col">
+        <main className="grow overflow-y-auto bg-slate-50 relativ flex flex-col">
           <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-slate-100 px-8 py-4 flex justify-between items-center">
             <div className="flex gap-5">
               <div className="lg:hidden">
@@ -161,14 +161,7 @@ const MainContainer = ({ children, toast, handleOnTextChange = null }) => {
             </div>
           </header>
 
-          <div className="grow ">{children}</div>
-
-          <div className="mt-5 ">
-            {/* <small className="text-center text-stone-500 mx-auto">
-                            Copyright &copy;{new Date().getFullYear()}{" "}
-                            <a href="#">CCT LOGISTICS BACK END SYSTEM</a>
-                        </small> */}
-          </div>
+          <div className="grow">{children}</div>
         </main>
       </div>
     </div>

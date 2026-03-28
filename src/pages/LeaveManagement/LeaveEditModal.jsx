@@ -73,6 +73,7 @@ const LeaveEditModal = ({
       });
 
       setMsg("Leave application updated successfully");
+      handleOnClose();
     } catch (error) {
       setError(error.message);
     } finally {
@@ -175,7 +176,7 @@ const LeaveEditModal = ({
             <Button
               type="button"
               label="Cancel"
-              onClick={() => handleOnHide()}
+              onClick={handleOnClose}
               className="p-3 rounded text-white"
               severity="secondary"
             />

@@ -51,9 +51,14 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("agent_join", (sessionId) => {
+  socket.on("agent_join", ({ sessionId, userId }) => {
     socket.join(sessionId);
+    activeSessions[sessionId].agentConnected = userId;
     socket.broadcast.to(sessionId).emit("agent_joined");
+  });
+
+  socket.on("agent_rejoin", (sessionId) => {
+    socket.join(sessionId);
   });
 
   socket.on("agent_connected", () => {
@@ -62,6 +67,7 @@ io.on("connection", (socket) => {
       Object.keys(activeSessions).map((sid) => ({
         sessionId: sid,
         messages: activeSessions[sid].messages,
+        agentConnected: activeSessions[sid].agentConnected,
       })),
     );
   });
@@ -75,7 +81,7 @@ io.on("connection", (socket) => {
     };
     // If it's a user joining, notify agents
     if (!activeSessions[sessionId]) {
-      activeSessions[sessionId] = { messages: [msg] };
+      activeSessions[sessionId] = { messages: [msg], agentConnected: null };
     }
     console.log("agent_transfer_requested");
     socket.broadcast.emit("agent_transfer_requested", {

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { socket } from "../../lib/socket";
 import { Bot, MessageSquare, Send, User } from "lucide-react";
 import MainContainer from "../../layouts/MainContainer";
@@ -11,12 +12,19 @@ const index = () => {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
 
+  const { user } = useSelector((state) => state.auth);
+
   useEffect(() => {
     socket.emit("agent_connected");
 
     socket.on("active_sessions", (sessions) => {
-      //console.log(sessions);
+      // console.log(sessions);
       setActiveSessions([...sessions]);
+      sessions.forEach((session) => {
+        if (session.agentConnected == user.$id) {
+          socket.emit("agent_rejoin", session.sessionId);
+        }
+      });
     });
 
     socket.on("agent_transfer_requested", (data) => {
@@ -58,8 +66,12 @@ const index = () => {
   }, [selectedSessionId, activeSessions]);
 
   useEffect(() => {
-    if (selectedSessionId) {
-      socket.emit("agent_join", selectedSessionId);
+    let session = activeSessions.find((s) => s.sessionId === selectedSessionId);
+    if (session && !session.agentConnected) {
+      socket.emit("agent_join", {
+        sessionId: selectedSessionId,
+        userId: user.$id,
+      });
     }
   }, [selectedSessionId]);
 
@@ -100,7 +112,7 @@ const index = () => {
   return (
     <MainContainer toast={toastRef}>
       <div className="h-full flex flex-col ">
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex overflow-hidde">
           {/* Sidebar */}
           <div className="w-80 bg-white border-r border-neutral-200 flex flex-col">
             <div className="p-4 border-b border-neutral-200 bg-neutral-50">
@@ -139,7 +151,7 @@ const index = () => {
           </div>
 
           {/* Chat Area */}
-          <div className="flex-1 flex flex-col bg-white">
+          <div className="grow flex flex-col bg-white">
             {selectedSession ? (
               <>
                 <div className="p-4 border-b border-neutral-200 bg-neutral-50 flex justify-between items-center">
@@ -158,7 +170,7 @@ const index = () => {
                   </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-neutral-50/30">
+                <div className="h-[70vh] overflow-y-auto p-6 space-y-4 bg-neutral-50/30">
                   {selectedSession.messages.map((msg, idx) => (
                     <div
                       key={idx}

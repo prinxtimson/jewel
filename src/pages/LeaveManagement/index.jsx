@@ -124,7 +124,7 @@ const index = () => {
       <div className="flex gap-1 items-center text-[#f8fafc]">
         <Button
           onClick={() => approveLeave(rowData)}
-          disabled={rowData.status == "approved"}
+          disabled={rowData.approveAt}
           icon={<Check />}
           rounded
           raised
@@ -186,90 +186,93 @@ const index = () => {
 
   return (
     <MainContainer toast={toastRef}>
-      <LeaveEditModal
-        visible={visible}
-        handleOnHide={handleOnHide}
-        payload={selectedLeave}
-        setError={setError}
-        setMsg={setMsg}
-      />
-      <div className="shadow-md rounded-lg p-2 bg-white border border-slate-200">
-        <div className="w-full rounded">
-          <DataTable
-            value={data}
-            paginator
-            rows={20}
-            totalRecords={total}
-            loading={isLoading}
-            breakpoint="0px"
-            tableStyle={{ minWidth: "50rem" }}
-            dataKey="$id"
-            stripedRows
-            //header={header}
-          >
-            <Column field="$id" header="ID"></Column>
-            <Column
-              field="name"
-              header="Name"
-              style={{ minWidth: "10rem" }}
-              body={(row) => userBodyTemplate(row.user)}
-            ></Column>
-            <Column
-              field="leaveType"
-              header="Leave Type"
-              align="center"
-              style={{ minWidth: "10rem" }}
-              body={leaveTypeBodyTemplate}
-            ></Column>
-            <Column
-              field="startDate"
-              header="Start Date"
-              style={{ minWidth: "10rem" }}
-              body={(row) => dateBodyTemplate(row.startDate)}
-            ></Column>
-            <Column
-              field="endDate"
-              header="End Date"
-              style={{ minWidth: "10rem" }}
-              body={(row) => dateBodyTemplate(row.endDate)}
-            ></Column>
-            <Column
-              field="status"
-              header="Status"
-              body={statusBodyTemplate}
-            ></Column>
-            <Column
-              field="reason"
-              header="Reason"
-              style={{ minWidth: "10rem" }}
-            ></Column>
-            <Column
-              field="approverId"
-              header="Approve By"
-              align="center"
-              style={{ minWidth: "10rem" }}
-              body={(row) => userBodyTemplate(row.admin)}
-            ></Column>
-            <Column
-              field="comment"
-              header="Comment"
-              style={{ minWidth: "10rem" }}
-            ></Column>
-            <Column
-              field="approveAt"
-              header="Approve At"
-              align="center"
-              style={{ minWidth: "10rem" }}
-              body={(row) => dateBodyTemplate(row.approveAt)}
-            ></Column>
-            <Column
-              field="createdAt"
-              header="Submitted At"
-              style={{ minWidth: "10rem" }}
-              body={(row) => dateBodyTemplate(row.$createdAt)}
-            ></Column>
-            <Column header="Action" body={actionBodyTemplate}></Column>
-          </DataTable>
+      <div className="h-full flex flex-col p-5">
+        <LeaveEditModal
+          visible={visible}
+          handleOnHide={handleOnHide}
+          payload={selectedLeave}
+          setError={setError}
+          setMsg={setMsg}
+        />
+        <div className=" shadow-md rounded-lg p-2 bg-white border border-slate-200">
+          <div className="w-full rounded">
+            <DataTable
+              value={data}
+              paginator
+              rows={10}
+              totalRecords={total}
+              loading={isLoading}
+              breakpoint="0px"
+              tableStyle={{ minWidth: "50rem" }}
+              dataKey="$id"
+              stripedRows
+              size="small"
+              //header={header}
+            >
+              <Column field="$id" header="ID"></Column>
+              <Column
+                field="name"
+                header="Name"
+                style={{ minWidth: "10rem" }}
+                body={(row) => userBodyTemplate(row.user)}
+              ></Column>
+              <Column
+                field="leaveType"
+                header="Leave Type"
+                align="center"
+                style={{ minWidth: "10rem" }}
+                body={leaveTypeBodyTemplate}
+              ></Column>
+              <Column
+                field="startDate"
+                header="Start Date"
+                style={{ minWidth: "10rem" }}
+                body={(row) => dateBodyTemplate(row.startDate)}
+              ></Column>
+              <Column
+                field="endDate"
+                header="End Date"
+                style={{ minWidth: "10rem" }}
+                body={(row) => dateBodyTemplate(row.endDate)}
+              ></Column>
+              <Column
+                field="status"
+                header="Status"
+                body={statusBodyTemplate}
+              ></Column>
+              <Column
+                field="reason"
+                header="Reason"
+                style={{ minWidth: "10rem" }}
+              ></Column>
+              <Column
+                field="approverId"
+                header="Approve By"
+                align="center"
+                style={{ minWidth: "10rem" }}
+                body={(row) => userBodyTemplate(row.admin)}
+              ></Column>
+              <Column
+                field="comment"
+                header="Comment"
+                style={{ minWidth: "10rem" }}
+              ></Column>
+              <Column
+                field="approveAt"
+                header="Approve At"
+                align="center"
+                style={{ minWidth: "10rem" }}
+                body={(row) => dateBodyTemplate(row.approveAt)}
+              ></Column>
+              <Column
+                field="createdAt"
+                header="Submitted At"
+                style={{ minWidth: "10rem" }}
+                body={(row) => dateBodyTemplate(row.$createdAt)}
+              ></Column>
+              <Column header="Action" body={actionBodyTemplate}></Column>
+            </DataTable>
+          </div>
         </div>
       </div>
     </MainContainer>
