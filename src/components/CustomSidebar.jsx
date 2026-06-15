@@ -12,10 +12,10 @@ const CustomSidebar = ({ user, customClass }) => {
       link: "/dashboard",
     },
     {
-      id: "LEAVE",
+      id: "appointment",
       icon: "fa-address-book",
-      label: "Leave Management",
-      link: "/dashboard/leave-management",
+      label: "Appointments",
+      link: "/dashboard/appointment",
     },
     {
       id: "AGENTCHAT",

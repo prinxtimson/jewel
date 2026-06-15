@@ -8,19 +8,11 @@ client
 export const account = new Account(client);
 export const tablesDB = new TablesDB(client);
 
-export const getAllLeaveApplication = async () => {
+export const getAllBooking = async () => {
   const res = await tablesDB.listRows({
     databaseId: import.meta.env.VITE_APPWRITE_DATABASE_ID,
-    tableId: "leaveapplications",
-    queries: [Query.select(["*", "user.*", "admin.*"])],
-  });
-  const id = (await account.get()).$id;
-  createAuditLogs({
-    actionType: "access",
-    entityType: "Leave Applications",
-    location: "",
-    details: "Get all leave applications",
-    user: id,
+    tableId: "appointment",
+    // queries: [Query.select(["*", "user.*", "admin.*"])],
   });
 
   return res;

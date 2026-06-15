@@ -19,7 +19,7 @@ import {
 } from "recharts";
 
 import MainContainer from "../../layouts/MainContainer";
-import { getAllLeaveApplication, getAuditLogs } from "../../lib/appwrite";
+import { getAllBooking } from "../../lib/appwrite";
 import { Download } from "lucide-react";
 import moment from "moment";
 
@@ -46,13 +46,12 @@ const index = () => {
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    handleGetAuditLogs();
     handleGetLeaveApplication();
   }, []);
 
   const handleGetLeaveApplication = async () => {
     try {
-      const res = await getAllLeaveApplication();
+      const res = await getAllBooking();
       const counts = res.rows.reduce(
         (acc, cur) => {
           if (cur.status == "pending") acc.pending++;
@@ -77,16 +76,6 @@ const index = () => {
       console.error("Error:", error.message);
       setError(error.message);
       setIsLoading(false);
-    }
-  };
-
-  const handleGetAuditLogs = async () => {
-    try {
-      const res = await getAuditLogs();
-      setLogs(res.rows);
-    } catch (error) {
-      console.error("Error:", error.message);
-      setError(error.message);
     }
   };
 
@@ -139,25 +128,25 @@ const index = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[
             {
-              label: "Pending Application",
+              label: "Pending Appointment",
               value: stats.pending,
               icon: "fa-bullseye",
               color: "text-amber-600",
             },
             {
-              label: "Approved Application",
+              label: "Approved Appointment",
               value: stats.approved,
               icon: "fa-smile",
               color: "text-green-600",
             },
             {
-              label: "Cancelled Application",
+              label: "Cancelled Appointment",
               value: stats.cancelled,
               icon: "fa-frown",
               color: "text-red-600",
             },
             {
-              label: "Rejected Application",
+              label: "Rejected Appointment",
               value: stats.rejected,
               icon: "fa-frown",
               color: "text-red-600",
@@ -180,10 +169,10 @@ const index = () => {
           ))}
         </div>
 
-        <div className="mt-5 grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="mt-5 grid grid-cols-1  gap-5">
           <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
             <h3 className="text-sm text-center font-bold text-slate-800 mb-4 uppercase tracking-wider">
-              Leave Application
+              Booking Application
             </h3>
             <div className="h-[250px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -243,25 +232,9 @@ const index = () => {
         </div>
 
         <div className="space-y-4 mt-5">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-              Audit Log
-              <span className="bg-slate-200 text-slate-600 text-xs px-2 py-0.5 rounded-full">
-                {/* {sentiments.length} */}
-              </span>
-            </h2>
+          <div className="flex items-center justify-between"></div>
 
-            <button
-              onClick={() => exportToExcel("AuditLogs")}
-              className="border border-gray-200 shadow py-2 px-4 rounded flex items-center cursor-pointer"
-            >
-              <span className="text-sm mr-2">Export</span>
-
-              <Download />
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 h-full">
+          {/* <div className="grid grid-cols-1 gap-4 h-full">
             <div className="relative h-[26vh] overflow-auto">
               <div className="h-full border border-slate-200 bg-white rounded-md">
                 <DataTable
@@ -308,7 +281,7 @@ const index = () => {
                 </DataTable>
               </div>
             </div>
-          </div>
+          </div>*/}
         </div>
       </div>
     </MainContainer>

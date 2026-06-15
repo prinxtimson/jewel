@@ -10,10 +10,7 @@ import { Tag } from "primereact/tag";
 import moment from "moment";
 
 import MainContainer from "../../layouts/MainContainer";
-import {
-  approveLeaveApplication,
-  getAllLeaveApplication,
-} from "../../lib/appwrite";
+import { approveLeaveApplication, getAllBooking } from "../../lib/appwrite";
 import LeaveEditModal from "./LeaveEditModal";
 
 const index = () => {
@@ -35,7 +32,7 @@ const index = () => {
 
   const handleGetLeaveApplication = async () => {
     try {
-      const res = await getAllLeaveApplication();
+      const res = await getAllBooking();
       setData(res.rows);
       setTotal(res.total);
       setIsLoading(false);
@@ -214,26 +211,33 @@ const index = () => {
                 field="name"
                 header="Name"
                 style={{ minWidth: "10rem" }}
-                body={(row) => userBodyTemplate(row.user)}
               ></Column>
               <Column
-                field="leaveType"
-                header="Leave Type"
+                field="email"
+                header="Email"
+                style={{ minWidth: "10rem" }}
+              ></Column>
+              <Column
+                field="type"
+                header="Type"
                 align="center"
                 style={{ minWidth: "10rem" }}
-                body={leaveTypeBodyTemplate}
               ></Column>
               <Column
-                field="startDate"
-                header="Start Date"
+                field="department"
+                header="Department"
                 style={{ minWidth: "10rem" }}
-                body={(row) => dateBodyTemplate(row.startDate)}
               ></Column>
               <Column
-                field="endDate"
-                header="End Date"
+                field="date"
+                header="Date"
                 style={{ minWidth: "10rem" }}
-                body={(row) => dateBodyTemplate(row.endDate)}
+                body={(row) => dateBodyTemplate(row.date)}
+              ></Column>
+              <Column
+                field="time"
+                header="Time"
+                style={{ minWidth: "10rem" }}
               ></Column>
               <Column
                 field="status"
@@ -241,36 +245,12 @@ const index = () => {
                 body={statusBodyTemplate}
               ></Column>
               <Column
-                field="reason"
-                header="Reason"
-                style={{ minWidth: "10rem" }}
-              ></Column>
-              <Column
-                field="approverId"
-                header="Approve By"
-                align="center"
-                style={{ minWidth: "10rem" }}
-                body={(row) => userBodyTemplate(row.admin)}
-              ></Column>
-              <Column
-                field="comment"
-                header="Comment"
-                style={{ minWidth: "10rem" }}
-              ></Column>
-              <Column
-                field="approveAt"
-                header="Approve At"
-                align="center"
-                style={{ minWidth: "10rem" }}
-                body={(row) => dateBodyTemplate(row.approveAt)}
-              ></Column>
-              <Column
                 field="createdAt"
                 header="Submitted At"
                 style={{ minWidth: "10rem" }}
                 body={(row) => dateBodyTemplate(row.$createdAt)}
               ></Column>
-              <Column header="Action" body={actionBodyTemplate}></Column>
+              {/* <Column header="Action" body={actionBodyTemplate}></Column> */}
             </DataTable>
           </div>
         </div>
