@@ -41,14 +41,14 @@ const Header = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-14">
             <div className="flex items-center gap-2">
-              <div className="w-28 h-12 p-2 bg-[#6a008e] rounded-lg flex items-center justify-center">
+              {/* <div className="w-28 h-12 p-2 bg-[#6a008e] rounded-lg flex items-center justify-center">
                 <Link to="/">
                   <img
                     src="/images/logo-white.webp"
                     alt="Tritek Academy Logo"
                   />
                 </Link>
-              </div>
+              </div> */}
             </div>
             <div className="flex items-center gap-4">
               {isAuthenticated && (

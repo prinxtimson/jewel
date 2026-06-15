@@ -46,8 +46,7 @@ const ChatBot = () => {
 
   const flow = {
     start: {
-      message:
-        "Hi! I'm Emily, HR Connect AI virtual assistant. How can I assist you?",
+      message: "Hi!, I'am your AI virtual assistant. How can I assist you?",
       options: [],
       path: "loop",
     },
@@ -144,57 +143,36 @@ const ChatBot = () => {
         return "loop";
       },
     },
-    leave_balance: {
-      message: async (params) => {
-        const userMessage = lowercaseFirstLetter(params.userInput);
-        let botResponse = "";
-
-        try {
-          const { rows } = await searchLeaveBalance({
-            userId: user.$id,
-            leaveType: userMessage,
-          });
-          rows.map((row) => {
-            botResponse =
-              botResponse +
-              `You have ${row.balanceDays} days ${params.userInput} left for the year.\n`;
-          });
-
-          return botResponse;
-        } catch (error) {
-          console.error("Chat Error:", error);
-          return "Sorry, I'm having trouble connecting to the chat service.";
-        }
-      },
-      options: (params) => [`Submit Leave Request`, "Return to Main Menu"],
-      function: (params) => {
-        if (params.userInput == `Submit Leave Request`) {
-          updateForm({ user: user.$id, status: "pending" });
-        }
-      },
-      path: (params) => {
-        if (params.userInput == `Submit Leave Request`) return "book_leave";
-        return "loop";
-      },
+    ask_name: {
+      message: "Please enter your name:",
+      function: (params) => updateForm({ name: params.userInput }),
+      path: "ask_email",
     },
-    book_leave: {
-      message: "Please select from the categories below",
-      options: ["Annual Leave", "Sick Leave", "Maternity/Paternity Leave"],
+    ask_email: {
+      message: "Please enter your email:",
+      function: (params) => updateForm({ email: params.userInput }),
+      path: "ask_phone",
+    },
+    ask_phone: {
+      message: "Please enter your phone:",
+      function: (params) => updateForm({ phone: params.userInput }),
+      path: "appt_type",
+    },
+    appt_type: {
+      message: "Please select appointment type",
+      options: ["In-person", "Virtual", "Telephone"],
       function: (params) =>
-        updateForm({ leaveType: lowercaseFirstLetter(params.userInput) }),
-      path: (params) => {
-        if (params.userInput.toLowerCase().match("annual leave"))
-          return "ask_start";
-        if (params.userInput.toLowerCase().match("sick leave"))
-          return "ask_start";
-        if (params.userInput.toLowerCase().match("maternity/paternity leave"))
-          return "ask_start";
-        return "loop";
-      },
+        updateForm({ type: lowercaseFirstLetter(params.userInput) }),
+      path: "department",
     },
-    ask_start: {
+    department: {
+      message: "Please enter department:",
+      function: (params) => updateForm({ department: params.userInput }),
+      path: "date",
+    },
+    date: {
       message: "Please enter your start date (Format: YYYY-MM-DD)",
-      function: (params) => updateForm({ startDate: params.userInput }),
+      function: (params) => updateForm({ date: params.userInput }),
       path: async (params) => {
         const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
         if (!dateRegex.test(params.userInput)) {
@@ -210,42 +188,27 @@ const ChatBot = () => {
           );
           return;
         }
-        return "ask_end";
+        return "time";
       },
     },
-    ask_end: {
-      message: "Please enter your end date (Format: YYYY-MM-DD)",
-      function: (params) => updateForm({ endDate: params.userInput }),
-      path: async (params) => {
-        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-        if (!dateRegex.test(params.userInput)) {
-          await params.injectMessage(
-            "Invalid date, please re-enter your end date",
-          );
-          return;
-        }
-        const date = new Date(params.userInput);
-        if (isNaN(date.getTime())) {
-          await params.injectMessage(
-            "Invalid date, please re-enter your end date",
-          );
-          return;
-        }
-        return "submit_leave";
-      },
+    time: {
+      message: "Please select appointment time:",
+      options: ["10:00", "11:00", "13:00", "14:00"],
+      function: (params) => updateForm({ time: params.userInput }),
+      path: "submit_leave",
     },
     submit_leave: {
       message: async () => {
         const form = formRef.current;
         try {
           await submitLeaveApplication(form);
-          return "Leave application submitted successfully";
+          return "Booking appointment submitted successfully";
         } catch (error) {
           console.error("Chat Error:", error);
           return "Sorry, I'm having trouble connecting to the chat service.";
         }
       },
-      options: ["Leave Management", "Return to Main Menu"],
+      //options: ["Leave Management", "Return to Main Menu"],
       path: "loop",
     },
     human_handover: {
