@@ -111,32 +111,17 @@ const ChatBot = () => {
         }
       },
       function: (params) => {
-        if (params.userInput == "Submit Leave Request") {
-          updateForm({ user: user.$id, status: "pending" });
-        }
+        // if (params.userInput == "Submit Leave Request") {
+        //   updateForm({ user: user.$id, status: "pending" });
+        // }
 
-        if (params.userInput.match("Escalate")) {
+        if (params.userInput.match("Transfer to Human")) {
           setIsHumanAgent(true);
         }
       },
       path: async (params) => {
-        if (
-          params.userInput.toLowerCase().match("annual leave") &&
-          params.prevPath == "loop"
-        )
-          return "leave_balance";
-        if (
-          params.userInput.toLowerCase().match("sick leave") &&
-          params.prevPath == "loop"
-        )
-          return "leave_balance";
-        if (
-          params.userInput.toLowerCase().match("maternity/paternity leave") &&
-          params.prevPath == "loop"
-        )
-          return "leave_balance";
-        if (params.userInput == "Submit Leave Request") return "book_leave";
-        if (params.userInput.match("Escalate")) {
+        if (params.userInput.match("Book Appointment")) return "ask_name";
+        if (params.userInput.match("Transfer to Human")) {
           await params.injectMessage("Connecting to an agent... ");
           return "human_handover";
         }

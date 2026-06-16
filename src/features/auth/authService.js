@@ -1,4 +1,4 @@
-import { account, createAuditLogs } from "../../lib/appwrite";
+import { account } from "../../lib/appwrite";
 
 const getCurrentUser = async () => {
   const res = await account.get();
@@ -7,13 +7,6 @@ const getCurrentUser = async () => {
 };
 
 const logout = async () => {
-  createAuditLogs({
-    actionType: "access",
-    entityType: "Auth",
-    location: "",
-    details: "Logout",
-    user: account.get().$id,
-  });
   await account.deleteSession({
     sessionId: "current",
   });
@@ -23,13 +16,7 @@ const logout = async () => {
 
 const login = async (userData) => {
   const res = await account.createEmailPasswordSession(userData);
-  createAuditLogs({
-    actionType: "access",
-    entityType: "Auth",
-    location: "",
-    details: "Login",
-    user: res.$id,
-  });
+
   return res;
 };
 
@@ -38,37 +25,19 @@ const forgotPass = async (email) => {
     email,
     url: `${import.meta.env.VITE_APP_URL}/password/reset`,
   });
-  createAuditLogs({
-    actionType: "access",
-    entityType: "Auth",
-    location: "",
-    details: "Forgot password",
-    user: res.$id,
-  });
+
   return res;
 };
 
 const resetPass = async (data) => {
   const res = await account.updateRecovery(data);
-  createAuditLogs({
-    actionType: "access",
-    entityType: "Auth",
-    location: "",
-    details: "Reset password",
-    user: res.$id,
-  });
+
   return res;
 };
 
 const changePass = async (data) => {
   const res = await account.updatePassword(data);
-  createAuditLogs({
-    actionType: "access",
-    entityType: "Auth",
-    location: "",
-    details: "Change Password",
-    user: res.$id,
-  });
+
   return res;
 };
 
