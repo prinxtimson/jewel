@@ -156,10 +156,10 @@ const ChatBot = () => {
       path: "date",
     },
     date: {
-      message: "Please enter your start date (Format: YYYY-MM-DD)",
+      message: "Please enter your start date (Format: DD/MM/YYYY)",
       function: (params) => updateForm({ date: params.userInput }),
       path: async (params) => {
-        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+        const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
         if (!dateRegex.test(params.userInput)) {
           await params.injectMessage(
             "Invalid date, please re-enter your start date",
