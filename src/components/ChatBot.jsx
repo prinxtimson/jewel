@@ -156,20 +156,20 @@ const ChatBot = () => {
       path: "date",
     },
     date: {
-      message: "Please enter your start date (Format: DD/MM/YYYY)",
+      message: "Please enter your appointment date (Format: DD/MM/YYYY)",
       function: (params) => updateForm({ date: params.userInput }),
       path: async (params) => {
-        const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-        if (!dateRegex.test(params.userInput)) {
+        const dateRegex = /^\d{2}-\d{2}-\d{4}$/;
+        if (!dateRegex.test(params.userInput.replaceAll("/", "-"))) {
           await params.injectMessage(
-            "Invalid date, please re-enter your start date",
+            "Invalid date, please re-enter your appointment date",
           );
           return;
         }
         const date = new Date(params.userInput);
         if (isNaN(date.getTime())) {
           await params.injectMessage(
-            "Invalid date, please re-enter your start date",
+            "Invalid date, please re-enter your appointment date",
           );
           return;
         }
@@ -297,7 +297,7 @@ const ChatHeader = (props) => {
       <div className="rcb-chat-header">
         <div className="rcb-bot-avatar chat-bg-img"></div>
         <div className="flex items-center gap-2">
-          <span className="font-semibold">HR Connect</span>
+          <span className="font-semibold">AI-Powered Health Assistant</span>
         </div>
       </div>
       <div className="rcb-chat-header">
