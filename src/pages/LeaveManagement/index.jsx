@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { DataTable } from "primereact/datatable";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import { SquarePen, Check } from "lucide-react";
+import { SquarePen, Check, X } from "lucide-react";
 import { Column } from "primereact/column";
 import { Avatar } from "primereact/avatar";
 import { Tag } from "primereact/tag";
@@ -97,11 +97,11 @@ const index = () => {
     }
   };
 
-  const approveLeave = async (row) => {
+  const approveLeave = async (row, status) => {
     try {
       const res = await approveLeaveApplication({
         ...row,
-        status: "approved",
+        status: status,
         admin: user.$id,
         approveAt: new Date(),
       });
@@ -110,7 +110,7 @@ const index = () => {
       let rows = [...data];
       rows.splice(ind, 1, res);
       setData([...rows]);
-      setMsg("Leave application updated successfully");
+      setMsg("Appointment updated successfully");
     } catch (error) {
       setError(error.message);
     }
@@ -119,28 +119,27 @@ const index = () => {
   const actionBodyTemplate = (rowData) => {
     return (
       <div className="flex gap-1 items-center text-[#f8fafc]">
-        <Button
-          onClick={() => approveLeave(rowData)}
-          disabled={rowData.approveAt}
-          icon={<Check />}
-          rounded
-          raised
-          severity="success"
-          aria-label="Approve"
-          tooltip="Approve"
-        />
-        <Button
-          onClick={(e) => {
-            setSelectedLeave(rowData);
-            setVisible(true);
-          }}
-          icon={<SquarePen />}
-          rounded
-          raised
-          severity="secondary"
-          aria-label="Edit"
-          tooltip="Edit"
-        />
+        <button
+          disabled={
+            rowData.status !== "pending" || rowData.status == "approved"
+          }
+          onClick={() => approveLeave(rowData, "approved")}
+          className="p-2 bg-green-50 text-green-600 rounded-full  transition-colors cursor-pointer"
+          title="Approved"
+        >
+          <Check className="w-4 h-4" />
+        </button>
+
+        <button
+          disabled={
+            rowData.status !== "pending" || rowData.status == "rejected"
+          }
+          onClick={() => approveLeave(rowData, "rejected")}
+          className="p-2 bg-rose-50 text-rose-600 rounded-full transition-colors cursor-pointer"
+          title="Rejected"
+        >
+          <X className="w-4 h-4" />
+        </button>
       </div>
     );
   };
@@ -250,7 +249,7 @@ const index = () => {
                 style={{ minWidth: "10rem" }}
                 body={(row) => dateBodyTemplate(row.$createdAt)}
               ></Column>
-              {/* <Column header="Action" body={actionBodyTemplate}></Column> */}
+              <Column header="Action" body={actionBodyTemplate}></Column>
             </DataTable>
           </div>
         </div>

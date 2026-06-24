@@ -157,22 +157,24 @@ const ChatBot = () => {
     },
     date: {
       message: "Please enter your appointment date (Format: DD/MM/YYYY)",
-      function: (params) => updateForm({ date: params.userInput }),
+      function: (params) => {
+        const date = new Date();
+        date.setFullYear(params.userInput.split("/")[2]);
+        date.setMonth(params.userInput.split("/")[1] - 1);
+        date.setDate(params.userInput.split("/")[0]);
+
+        updateForm({ date: date.toDateString() });
+      },
       path: async (params) => {
         const dateRegex = /^\d{2}-\d{2}-\d{4}$/;
-        if (!dateRegex.test(params.userInput.replaceAll("/", "-"))) {
+        const dateInput = params.userInput.replaceAll("/", "-");
+        if (!dateRegex.test(dateInput)) {
           await params.injectMessage(
             "Invalid date, please re-enter your appointment date",
           );
           return;
         }
-        const date = new Date(params.userInput);
-        if (isNaN(date.getTime())) {
-          await params.injectMessage(
-            "Invalid date, please re-enter your appointment date",
-          );
-          return;
-        }
+
         return "time";
       },
     },

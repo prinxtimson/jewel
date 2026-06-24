@@ -77,7 +77,7 @@ const App = () => {
               }
             />
             <Route
-              path="leave-management"
+              path="appointment"
               element={
                 <AuthRoute>
                   <LeaveManagement />

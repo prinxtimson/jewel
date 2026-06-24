@@ -88,18 +88,18 @@ export const createAuditLogs = async (data) => {
 export const submitLeaveApplication = async (data) => {
   const res = await tablesDB.createRow({
     databaseId: import.meta.env.VITE_APPWRITE_DATABASE_ID,
-    tableId: "leaveapplications",
+    tableId: "appointment",
     rowId: ID.unique(),
     data,
   });
   const id = (await account.get()).$id;
-  createAuditLogs({
-    actionType: "create",
-    entityType: "Leave Applications",
-    location: "",
-    details: "Submit leave applications",
-    user: id,
-  });
+  // createAuditLogs({
+  //   actionType: "create",
+  //   entityType: "Leave Applications",
+  //   location: "",
+  //   details: "Submit leave applications",
+  //   user: id,
+  // });
 
   return res;
 };
@@ -107,45 +107,11 @@ export const submitLeaveApplication = async (data) => {
 export const approveLeaveApplication = async (data) => {
   const res = await tablesDB.updateRow({
     databaseId: import.meta.env.VITE_APPWRITE_DATABASE_ID,
-    tableId: "leaveapplications",
+    tableId: "appointment",
     rowId: data.$id,
     data: {
-      admin: data.admin,
       status: data.status,
-      approveAt: data.approveAt,
-      comment: data.comment,
     },
-  });
-  if (data.status == "approved") {
-    const days = calculateDays(res.startDate, res.endDate);
-    const rowsRes = await tablesDB.listRows({
-      databaseId: import.meta.env.VITE_APPWRITE_DATABASE_ID,
-      tableId: "leavebalances",
-      queries: [
-        Query.equal("user", res.user.$id), // Specify which rows to update
-        Query.equal("leaveType", res.leaveType),
-      ],
-    });
-    for (let row of rowsRes.rows) {
-      await tablesDB.updateRow({
-        databaseId: import.meta.env.VITE_APPWRITE_DATABASE_ID,
-        tableId: "leavebalances",
-        rowId: row.$id,
-        data: {
-          balanceDays: row.balanceDays - days,
-          usedDays: row.usedDays + days,
-        },
-      });
-    }
-  }
-
-  const id = (await account.get()).$id;
-  createAuditLogs({
-    actionType: "update",
-    entityType: "Leave Applications",
-    location: "",
-    details: "Update leave applications",
-    user: id,
   });
 
   return res;
