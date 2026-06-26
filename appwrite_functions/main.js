@@ -1,34 +1,41 @@
-import { Client, Databases, Query } from "node-appwrite";
+import { Client, Databases, Users, ID } from "node-appwrite";
 
 export default async ({ req, res, log, error }) => {
   const client = new Client()
     .setEndpoint(process.env.APPWRITE_FUNCTION_API_ENDPOINT)
     .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
-    .setKey(req.headers["x-appwrite-key"] ?? "");
+    .setKey(req.headers["x-appwrite-key"] || process.env.ADMIN_API_KEY);
 
   const databases = new Databases(client);
+  const users = new Users(client);
 
   const databaseId = process.env.APPWRITE_DATABASE_ID;
   const payload = req.body;
 
   try {
-    if (req.headers["x-appwrite-event"] == `users.${payload.$id}.create`) {
-      await databases.createDocument({
-        databaseId: databaseId,
-        collectionId: "users",
-        documentId: payload.$id,
-        data: {
-          name: payload.name,
-          email: payload.email,
-          avatar: "public/avatar",
-        },
-      });
-    }
+    const newUser = await users.create({
+      userId: ID.unique(),
+      email: payload.email,
+      password: "", // Passing an empty string creates a passwordless account
+    });
 
-    log(`Profile created for user: ${req.headers["x-appwrite-event"]}`);
-    return res.send("Profile created");
+    await databases.createDocument({
+      databaseId: databaseId,
+      collectionId: "profile",
+      documentId: ID.unique(),
+      data: {
+        user_id: newUser.$id,
+        name: payload.name,
+        email: payload.email,
+        phone: payload.phone,
+        avatar: "public/avatar",
+      },
+    });
+
+    log(`User created successfully: ${newUser.$id}`);
+    return res.json({ success: true, userId: newUser.$id });
   } catch (err) {
-    error("Failed to create: " + err.message);
-    return res.send("Failed to create profile", 500);
+    error("Failed to create user: " + err.message);
+    return res.json({ error: err.message }, 500);
   }
 };

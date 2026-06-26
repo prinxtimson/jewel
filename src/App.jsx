@@ -21,6 +21,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import LeaveManagement from "./pages/LeaveManagement";
 import ChatAgent from "./pages/ChatAgent";
+import UserManagement from "./pages/UserManagement";
 
 const App = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -73,6 +74,14 @@ const App = () => {
               element={
                 <AuthRoute>
                   <Dashboard />
+                </AuthRoute>
+              }
+            />
+            <Route
+              path="user-management"
+              element={
+                <AuthRoute>
+                  <UserManagement />
                 </AuthRoute>
               }
             />

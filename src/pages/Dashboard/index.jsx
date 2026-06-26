@@ -128,6 +128,12 @@ const index = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[
             {
+              label: "Total Appointment",
+              value: stats.total,
+              icon: "fa-frown",
+              color: "text-red-600",
+            },
+            {
               label: "Pending Appointment",
               value: stats.pending,
               icon: "fa-bullseye",
@@ -138,12 +144,6 @@ const index = () => {
               value: stats.approved,
               icon: "fa-smile",
               color: "text-green-600",
-            },
-            {
-              label: "Cancelled Appointment",
-              value: stats.cancelled,
-              icon: "fa-frown",
-              color: "text-red-600",
             },
             {
               label: "Rejected Appointment",

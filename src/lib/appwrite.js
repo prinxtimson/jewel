@@ -1,4 +1,5 @@
 import { Client, TablesDB, Account, ID, Query } from "appwrite";
+import { generatePassword } from "./utils";
 
 const client = new Client();
 client
@@ -16,6 +17,52 @@ export const getAllBooking = async () => {
   });
 
   return res;
+};
+
+export const getAllUsers = async () => {
+  const res = await tablesDB.listRows({
+    databaseId: import.meta.env.VITE_APPWRITE_DATABASE_ID,
+    tableId: "profile",
+  });
+
+  return res;
+};
+
+export const addNewUser = async ({ email, phone, name }) => {
+  let password = await generatePassword(8);
+
+  const user = await account.create({
+    userId: ID.unique(),
+    name: name,
+    email: email,
+    password: password,
+  });
+
+  const res = await tablesDB.createRow({
+    databaseId: import.meta.env.VITE_APPWRITE_DATABASE_ID,
+    tableId: "profile",
+    rowId: ID.unique(),
+    data: {
+      user_id: user.$id,
+      name: user.name,
+      email: user.email,
+      phone: phone,
+    },
+  });
+
+  return res;
+};
+
+export const deleteUser = async (id) => {
+  await account.deleteIdentity(id);
+
+  await tablesDB.deleteRow({
+    databaseId: import.meta.env.VITE_APPWRITE_DATABASE_ID,
+    tableId: "profile",
+    rowId: id,
+  });
+
+  return "The user had been deleted";
 };
 
 export const getAuditLogs = async () => {
